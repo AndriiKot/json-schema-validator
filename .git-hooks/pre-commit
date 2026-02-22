@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const { execSync } = require('node:child_process');
+
+console.log('🚀 pre-commit hook started');
+
+try {
+  execSync('npm run fix', { stdio: 'inherit' });
+
+  execSync('npm run lint', { stdio: 'inherit' });
+
+  execSync('npm run test', { stdio: 'inherit' });
+
+  console.log('✅ pre-commit: formatting, linting, and tests passed');
+} catch (error) {
+  console.error('❌ pre-commit: check failed. Commit aborted.', error);
+  process.exit(1);
+}
