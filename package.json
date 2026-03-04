@@ -20,7 +20,7 @@
   "scripts": {
     "prepare": "node tools/setGitHooks.js",
     "lint": "eslint . && prettier -c \"**/*.js\"",
-    "fix": "eslint . --fix && prettier --write \"**/*.js\"",
+    "fix": "prettier --write \"**/*.js\" && eslint . --fix",
     "test": "node --test",
     "prepublishOnly": "npm run lint && npm test"
   },
