@@ -21,6 +21,9 @@
     "test": "node --test",
     "prepublishOnly": "npm run lint && npm test"
   },
+  "imports": {
+     "#src": "./src/index.js"
+   },
   "keywords": [
     "json",
     "json-schema",
