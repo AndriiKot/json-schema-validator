@@ -50,7 +50,7 @@ export class CodeGenerator {
           ? expected.join(', ')
           : expected;
         errors.push({
-          path: path || 'root',
+          path,
           message: `Expected type '${expectedStr}', got '${actual}'`,
         });
       };
@@ -141,7 +141,7 @@ export class CodeGenerator {
               const regex = new RegExp(pattern);
               for (const key of Object.keys(value)) {
                 if (regex.test(key)) {
-                  validatedKeys.add(key); // ✅ добавляем ключ, чтобы strict не ругался
+                  validatedKeys.add(key);
                   validateSchema(
                     propSchema,
                     value[key],
@@ -181,7 +181,6 @@ export class CodeGenerator {
           }
         }
 
-        // массивы
         if (schema.type === 'array' && Array.isArray(value)) {
           value.forEach((item, i) =>
             validateSchema(schema.items, item, `${path}[${i}]`),
@@ -191,7 +190,6 @@ export class CodeGenerator {
 
       validateSchema(schema, data);
 
-      // кастомные валидаторы
       for (const validator of customValidators) {
         validator(data, '', errors);
       }
