@@ -153,9 +153,7 @@ export class NativeEngine {
     }
 
     if (schema.multipleOf !== undefined) {
-      const division = value / schema.multipleOf;
-
-      if (Math.abs(division - Math.round(division)) > Number.EPSILON) {
+      if (value % schema.multipleOf !== 0) {
         this.errors.push({
           path,
           message: `Value ${value} is not a multiple of ${schema.multipleOf}`,
