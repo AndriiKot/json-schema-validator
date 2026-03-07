@@ -416,3 +416,50 @@ test('multiple errors are collected', () => {
   assert.equal(result.isValid, false);
   assert.equal(result.errors.length, 2);
 });
+
+test('boolean schema true accepts everything', () => {
+  const validator = new Validator();
+
+  const result = validator.validate(true, 123);
+
+  assert.equal(result.isValid, true);
+});
+
+test('boolean schema false rejects everything', () => {
+  const validator = new Validator();
+
+  const result = validator.validate(false, 123);
+
+  assert.equal(result.isValid, false);
+});
+
+test('unknown type produces error', () => {
+  const validator = new Validator();
+
+  const schema = { type: 'unknownType' };
+
+  const result = validator.validate(schema, 123);
+
+  assert.equal(result.isValid, false);
+});
+
+test('empty schema accepts any data', () => {
+  const validator = new Validator();
+
+  const result = validator.validate({}, 123);
+
+  assert.equal(result.isValid, true);
+});
+
+test('enum works with mixed types', () => {
+  const validator = new Validator();
+
+  const schema = {
+    enum: [1, '1', true],
+  };
+
+  assert.equal(validator.validate(schema, 1).isValid, true);
+  assert.equal(validator.validate(schema, '1').isValid, true);
+  assert.equal(validator.validate(schema, true).isValid, true);
+  assert.equal(validator.validate(schema, false).isValid, false);
+});
