@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
 const childProcess = require('node:child_process');
-const { setGitHooks } = require('../tools/setGitHooks.js');
+const { setGitHooks } = require('#tools');
 
 test('setGitHooks runs git config command', () => {
   const originalExecSync = childProcess.execSync;

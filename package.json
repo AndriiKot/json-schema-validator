@@ -22,7 +22,8 @@
     "prepublishOnly": "npm run lint && npm test"
   },
   "imports": {
-    "#lib": "./lib/index.js"
+    "#lib": "./lib/index.js",
+    "#tools":"./tools/index.js"
   },
   "keywords": [
     "json",
