@@ -50,6 +50,7 @@
   "devDependencies": {
     "eslint": "^9.39.2",
     "eslint-config-metarhia": "^9.1.5",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "tinybench": "^6.0.0"
   }
 }
