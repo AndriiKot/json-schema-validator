@@ -27,7 +27,8 @@
   },
   "imports": {
     "#lib": "./lib/index.js",
-    "#tools": "./tools/index.js"
+    "#tools": "./tools/index.js",
+    "#benchmarks": "./benchmarks/index.mjs"
   },
   "keywords": [
     "json",
