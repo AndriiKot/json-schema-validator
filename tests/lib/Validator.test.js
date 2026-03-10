@@ -3,6 +3,44 @@ import assert from 'node:assert/strict';
 import { Validator } from '#lib';
 
 // ==================================================
+// TEST: compile() works with nested arrays
+// ==================================================
+test('compile() works with nested arrays', () => {
+  const validator = new Validator();
+
+  const schema = {
+    type: 'array',
+    items: {
+      type: 'array',
+      items: { type: 'number' },
+    },
+  };
+
+  const validate = validator.compile(schema);
+
+  const validData = [[1, 2], [3]];
+  const invalidData = [[1, '2']];
+
+  console.log('--- Testing valid nested array ---');
+  const resultValid = validate(validData);
+  console.log('Result:', resultValid);
+  assert.equal(resultValid.isValid, true);
+
+  console.log('--- Testing invalid nested array ---');
+  const resultInvalid = validate(invalidData);
+  console.log('Result:', resultInvalid);
+  assert.equal(resultInvalid.isValid, false);
+
+  // Проверим ошибки
+  if (!resultInvalid.isValid) {
+    console.log('Errors found:');
+    resultInvalid.errors.forEach((err) => {
+      console.log(`Path: ${err.path}, Message: ${err.message}`);
+    });
+  }
+});
+
+// ==================================================
 // BASIC USAGE
 // ==================================================
 
