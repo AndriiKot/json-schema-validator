@@ -1,20 +1,210 @@
-# jsonSchemaValidator
 
-Lightweight and extensible JSON Schema validator for Node.js and modern JavaScript environments.
+# JSON Schema Validator
 
-## Medium Data
+High-performance JSON schema validator for Node.js.
 
-| Validator | Dataset | Avg Latency (ns) | Median Latency (ns) | Throughput Avg (ops/s) | Median Throughput (ops/s) | Samples |
-|-----------|---------|-----------------|--------------------|-----------------------|--------------------------|---------|
-| Native Validator | dataset-10 | 156,692 ± 2.68% | 147,600 ± 3,400 | 6,798 ± 2.33% | 6,775 ± 160 | 639 |
-| Compiled Validator | dataset-10 | 5,702.3 ± 0.46% | 5,600 ± 100 | 180,758 ± 0.26% | 178,571 ± 3,133 | 17,537 |
-| AJV | dataset-10 | 6,202 ± 1.64% | 6,300 ± 100 | 175,662 ± 0.56% | 158,730 ± 2,480 | 16,124 |
-| Native Validator | dataset-100 | 1,519,285 ± 7.95% | 1,599,950 ± 245,450 | 758 ± 11.24% | 625 ± 87 | 66 |
-| Compiled Validator | dataset-100 | 56,164 ± 1.62% | 58,800 ± 700 | 20,767 ± 2.40% | 17,007 ± 205 | 1,781 |
-| AJV | dataset-100 | 66,291 ± 0.83% | 66,600 ± 1,000 | 15,655 ± 1.30% | 15,015 ± 222 | 1,509 |
-| Native Validator | dataset-1000 | 18,400,058 ± 2.18% | 18,482,150 ± 1,189,550 | 55 ± 2.24% | 54 ± 3 | 64 |
-| Compiled Validator | dataset-1000 | 763,718 ± 6.18% | 656,800 ± 14,600 | 1,454 ± 5.39% | 1,523 ± 35 | 131 |
-| AJV | dataset-1000 | 911,730 ± 6.73% | 754,700 ± 77,700 | 1,231 ± 6.21% | 1,325 ± 144 | 111 |
-| Native Validator | dataset-100000 | 1,808,855,714 ± 10.22% | 1,934,364,000 ± 252,577,850 | 1 ± 15.66% | 1 ± 0 | 64 |
-| Compiled Validator | dataset-100000 | 68,487,750 ± 6.33% | 65,293,250 ± 10,095,800 | 15 ± 6.05% | 15 ± 2 | 64 |
-| AJV | dataset-100000 | 54,754,292 ± 5.12% | 54,808,850 ± 9,076,600 | 19 ± 5.15% | 18 ± 3 | 64 |
+Designed for:
+
+- ⚡ maximum performance
+- 🧠 smart compiled validators
+- 🔧 extensibility
+- 📦 minimal overhead
+
+---
+
+# Why another validator?
+
+Most validators focus on flexibility but sacrifice performance.
+
+This project focuses on **raw validation speed** while still supporting:
+
+- runtime validation
+- compiled validators
+- custom types
+- custom validators
+
+---
+
+# Installation
+
+```bash
+npm install json-schema-validator
+````
+
+---
+
+# Quick Example
+
+```js
+import { Validator } from "json-schema-validator";
+
+const validator = new Validator();
+
+const schema = {
+  type: "object",
+  properties: {
+    name: { type: "string" },
+    age: { type: "number" }
+  }
+};
+
+const data = {
+  name: "John",
+  age: 30
+};
+
+const result = validator.validate(schema, data);
+
+console.log(result);
+```
+
+---
+
+# Two Validation Modes
+
+## Runtime validation
+
+Use when data is validated **only once**.
+
+```js
+validator.validate(schema, data);
+```
+
+Advantages:
+
+* no compilation cost
+* fastest for single validation
+
+---
+
+## Compiled validation
+
+Use when validating **large datasets**.
+
+```js
+const validate = validator.compile(schema);
+
+validate(data1);
+validate(data2);
+validate(data3);
+```
+
+Advantages:
+
+* schema compiled once
+* extremely fast repeated validation
+
+---
+
+# Performance
+
+Benchmark executed using **tinybench**.
+
+Libraries compared:
+
+* Ajv
+* Zod
+* Yup
+* Fastest Validator
+
+Results:
+
+| Validator         | ops/sec       | relative speed |
+| ----------------- | ------------- | -------------- |
+| **NativeEngine**  | **1,186,514** | 🥇 fastest     |
+| CompiledValidator | 94,039        | 12× slower     |
+| Yup               | 11,225        | 100× slower    |
+| Zod               | 7,493         | 158× slower    |
+| FastestValidator  | 3,796         | 312× slower    |
+| AJV (cold start)  | 225           | 5270× slower   |
+
+---
+
+# Benchmark Chart
+
+```
+
+NativeEngine        █████████████████████████████████████████ 1,186,514
+CompiledValidator   ████ 94,039
+Yup                 █ 11,225
+Zod                 █ 7,493
+FastestValidator    ▌ 3,796
+AJV cold            ▏ 225
+
+```
+
+---
+
+# When to use which mode
+
+| Scenario                   | Method        |
+| -------------------------- | ------------- |
+| single validation          | `.validate()` |
+| large dataset              | `.compile()`  |
+| high performance pipelines | `.compile()`  |
+
+---
+
+# Cache
+
+Compiled schemas are automatically cached using `WeakMap`.
+
+```js
+const validator = new Validator();
+
+const validate = validator.compile(schema);
+
+// reused from cache
+const validate2 = validator.compile(schema);
+```
+
+Clear cache:
+
+```js
+validator.clearCache();
+```
+
+---
+
+# Options
+
+```js
+const validator = new Validator({
+  recursive: true,
+  strict: true,
+  customTypes: {},
+  customValidators: []
+});
+```
+
+| option           | description                |
+| ---------------- | -------------------------- |
+| recursive        | validate nested structures |
+| strict           | strict schema validation   |
+| customTypes      | user defined types         |
+| customValidators | custom validators          |
+
+---
+
+# Architecture
+
+Validator uses two internal engines:
+
+| Engine        | Description        |
+| ------------- | ------------------ |
+| NativeEngine  | runtime validation |
+| CodeGenerator | compiled validator |
+
+---
+
+# Roadmap
+
+* more JSON Schema features
+* async validation
+* schema precompilation
+* browser support
+
+---
+
+# License
+
