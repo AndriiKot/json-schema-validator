@@ -1,6 +1,6 @@
 {
   "name": "json-schema-validator",
-  "version": "0.5.1",
+  "version": "1.0.0",
   "description": "Lightweight JSON Schema validator for Node.js and modern JavaScript environments",
   "main": "./lib/index.js",
   "exports": {
